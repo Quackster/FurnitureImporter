@@ -30,10 +30,10 @@ namespace FurnitureImporter
                 return;
             }
 
-            if (Directory.Exists("output"))
-            {
-                Directory.Delete("output", true);
-            }
+            // if (Directory.Exists("output"))
+            // {
+            //    Directory.Delete("output", true);
+            // }
 
             if (!Directory.Exists("input"))
             {

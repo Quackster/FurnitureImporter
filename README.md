@@ -30,8 +30,7 @@ The latest builds for Linux and Windows are found on the [latest](https://github
 - [.NET 8 or later](https://dotnet.microsoft.com/download)
 - A MySQL database (configured via `appsettings.json`)
 - The following folders:
-  - `input/` → drop your furniture ``.swf`` or ``.cct`` files here
-  - `output/` → automatically generated furniture data will appear here
+  - `input/` → drop your furniture ``.swf`` or ``.cct`` files here.
 
 ---
 
