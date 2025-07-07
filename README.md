@@ -8,7 +8,7 @@ A tool for automating the import of furniture data into your Habbo emulator data
 
 ## Features
 - Fetches live furnidata XML from Habbo’s official endpoint  
-- Processes furniture `.SWF` files you place in the `input` folder  
+- Processes furniture files you place in the `input` folder and uses the file name to get the furniture name.
 - Generates and inserts item definitions and catalogue entries into your database  
 - Handles variants, aliases, and different furniture types (e.g., chairs, beds, wall items)  
 - Built-in fancy console boot screen for some extra flair
@@ -19,7 +19,7 @@ A tool for automating the import of furniture data into your Habbo emulator data
 - [.NET 8 or later](https://dotnet.microsoft.com/download)
 - A MySQL database (configured via `appsettings.json`)
 - The following folders:
-  - `input/` → drop your furniture `.SWF` files here
+  - `input/` → drop your furniture ``.swf`` or ``.cct`` files here
   - `output/` → automatically generated furniture data will appear here
 
 ---
