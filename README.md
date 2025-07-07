@@ -10,7 +10,7 @@ A tool for automating the import of furniture data into your Habbo emulator data
 - Fetches live furnidata XML from Habbo’s official endpoint  
 - Processes furniture files you place in the `input` folder and uses the file name to get the furniture name.
 - Generates and inserts item definitions and catalogue entries into your database  
-- Handles variants, aliases, and different furniture types (e.g., chairs, beds, wall items)  
+- Handles variants, aliases, and different furniture types (e.g., different coloured chairs, beds, wall items, or branded advertisements vs non-branded of the same variant)  
 - Built-in fancy console boot screen for some extra flair
 
 ---
