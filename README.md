@@ -1,0 +1,39 @@
+# FurnitureImporter
+
+A tool for automating the import of furniture data into your Habbo emulator database, using live furnidata XML. Designed for **developers and retro hotel owners** who want to quickly add new furniture.
+
+![](https://i.imgur.com/EW6Kmn2.png)
+
+---
+
+## Features
+- Fetches live furnidata XML from Habbo’s official endpoint  
+- Processes furniture `.SWF` files you place in the `input` folder  
+- Generates and inserts item definitions and catalogue entries into your database  
+- Handles variants, aliases, and different furniture types (e.g., chairs, beds, wall items)  
+- Built-in fancy console boot screen for some extra flair
+
+---
+
+## Requirements
+- [.NET 8 or later](https://dotnet.microsoft.com/download)
+- A MySQL database (configured via `appsettings.json`)
+- The following folders:
+  - `input/` → drop your furniture `.SWF` files here
+  - `output/` → automatically generated furniture data will appear here
+
+---
+
+## Configuration
+
+Before running, set up your `appsettings.json` file with your database connection. Example:
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "server=localhost;database=kepler;user=root;password=yourpassword;"
+  }
+}
+```
+
+Place appsettings.json in the same directory as your compiled executable.

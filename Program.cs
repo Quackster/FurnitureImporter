@@ -11,14 +11,38 @@ namespace FurnitureImporter
 
         static async Task Main(string[] args)
         {
+
+
             _configuration = new ConfigurationBuilder()
                .AddJsonFile("appsettings.json")
                .Build();
+
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine(@"FurnitureImporter");
+            Console.WriteLine(@"Written by Quackster");
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine("----------------------------------------------------------------------");
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine("Initializing FurnitureImporter... please wait.");
+            Console.WriteLine();
 
             if (!TryDatabaseConnection())
             {
                 return;
             }
+
+            if (Directory.Exists("output"))
+            {
+                Directory.Delete("output", true);
+            }
+
+            if (!Directory.Exists("input"))
+            {
+                Directory.CreateDirectory("input");
+            }
+
+            Directory.CreateDirectory("output");
 
             using var context = new StorageContext();
 
@@ -26,11 +50,12 @@ namespace FurnitureImporter
             var cataloguePage = context.CataloguePages.ToList();
             var itemDefinitions = context.ItemDefinitions.ToList();
 
+            Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine($"Loaded {catalogueItems.Count} catalogue items");
             Console.WriteLine($"Loaded {cataloguePage.Count} catalogue pages");
             Console.WriteLine($"Loaded {itemDefinitions.Count} item definitions");
 
-            var nextCataloguePage = (cataloguePage.OrderByDescending( x => x.Id ).FirstOrDefault()?.Id ?? 0) + 1;
+            var nextCataloguePage = (cataloguePage.OrderByDescending(x => x.Id).FirstOrDefault()?.Id ?? 0) + 1;
 
             Console.WriteLine("Loading furnidata...");
 
@@ -41,35 +66,96 @@ namespace FurnitureImporter
 
             Console.WriteLine($"Fetched {itemsFromXml.Count} furnidata items from XML endpoint.");
 
-            /*
-            foreach (var file in Directory.GetFiles("swf_files"))
+            var inputFurni = new List<string>();
+            var outputFurni = new List<string>();
+
+            Console.WriteLine("Loading input furniture...");
+
+            foreach (var file in Directory.GetFiles("input"))
             {
-                string className = Path.GetFileNameWithoutExtension(file).Replace("hh_furni_xx_", "");
+                string className = Path.GetFileNameWithoutExtension(file)
+                    .Replace("hh_furni_xx_", "")
+                    .Replace("hh_furni_s_xx_", "");
 
-                FurniItem? furniEntry = itemsFromXml.FirstOrDefault(x => x.ClassName == className);
+                if (className.Contains("*"))
+                    className = className.Split('*')[0];
 
-                if (furniEntry is FurniItem furni)
+                if (inputFurni.Contains(className))
+                {
+                    continue;
+                }
+
+                if (!itemsFromXml.Any(x => x.FileName == className))
+                {
+                    continue;
+                }
+
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.Write("Added ");
+
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write(className);
+
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.Write(" to queue");
+
+                if (itemsFromXml.Count(x => x.Alias == className) > 1)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write(" (found " + itemsFromXml.Count(x => x.Alias == className) + " variants)");
+                }
+
+                Console.WriteLine();
+
+                inputFurni.Add(className);
+            }
+
+            foreach (var furni in inputFurni)
+            {
+                foreach (var furniVariant in itemsFromXml.Where(x => x.Alias == furni))
                 {
                     var itemDefinition = new ItemDefinition();
-                    itemDefinition.Sprite = furni.ClassName;
-                    itemDefinition.Name = furni.Name;
-                    itemDefinition.Description = furni.Description;
-                    itemDefinition.SpriteId = furni.Id;
-                    itemDefinition.Colour = furni.PartColors;
-                    itemDefinition.Length = furni.XDim;
-                    itemDefinition.Width = furni.YDim;
+                    itemDefinition.Sprite = furniVariant.ClassName;
+                    itemDefinition.Name = furniVariant.Name;
+                    itemDefinition.Description = furniVariant.Description;
+                    itemDefinition.SpriteId = furniVariant.Id;
+                    itemDefinition.Colour = furniVariant.PartColors;
+                    itemDefinition.Length = furniVariant.XDim;
+                    itemDefinition.Width = furniVariant.YDim;
                     itemDefinition.Interactor = "default";
                     itemDefinition.Behaviour = "requires_rights_for_interaction";
 
-                    if (furni.Type == "i")
+                    if (furniVariant.Type == "i")
                     {
                         itemDefinition.Behaviour += ",wall_item";
                     }
 
-                    if (furni.Type == "s")
+                    if (furniVariant.Type == "s")
                     {
-                        itemDefinition.Behaviour += ",solid";
+                        if (furniVariant.CanLayOn)
+                        {
+                            itemDefinition.Behaviour += ",can_lay_on_top";
+                            itemDefinition.Interactor = "bed";
+                            itemDefinition.TopHeight = 1;
+                        }
+                        else if (furniVariant.CanSitOn)
+                        {
+                            itemDefinition.Behaviour += ",can_sit_on_top";
+                            itemDefinition.Interactor = "chair";
+                            itemDefinition.TopHeight = 1;
+                        }
+                        else if (furniVariant.CanStandOn)
+                        {
+                            itemDefinition.Behaviour += ",can_stand_on_top";
+                            itemDefinition.Interactor = "default";
+                            itemDefinition.TopHeight = 0;
+                        }
+                        else
+                        {
+                            itemDefinition.Behaviour += ",solid";
+                        }
                     }
+
 
                     context.Add(itemDefinition);
                     context.SaveChanges();
@@ -83,13 +169,24 @@ namespace FurnitureImporter
                     catalogueItem.DefinitionId = itemDefinition.Id;
                     catalogueItem.PageId = "" + nextCataloguePage;
 
-
                     context.Add(catalogueItem);
                     context.SaveChanges();
 
-                }
-            }*/
+                    outputFurni.Add(itemDefinition.Sprite);
 
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.Write("Added: ");
+
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.Write(furniVariant.ClassName);
+
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.WriteLine(", name: " + furniVariant.Name + ", description: " + furniVariant.Description);
+                }
+            }
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Processed " + inputFurni.Count + " furniture files (and included " + (outputFurni.Count - inputFurni.Count) + " extra furnis)");
 
             /*
             foreach (var itemDef in itemDefinitions.Where(x => x.Id >= 1417))
@@ -126,6 +223,18 @@ namespace FurnitureImporter
             context.SaveChanges();
         }
 
+        /// <summary>
+        /// Finds variants of the given furni in the provided collection.
+        /// </summary>
+        /// <param name="items">The collection of items to search.</param>
+        /// <param name="furniFileName">The file name to match against.</param>
+        /// <returns>An enumerable of matching items.</returns>
+        private static IEnumerable<FurniItem> FindVariants(IEnumerable<FurniItem> items, string furniFileName)
+        {
+            return items.Where(x => x.FileName == furniFileName);
+        }
+
+
         private static bool TryDatabaseConnection()
         {
             try
@@ -133,6 +242,7 @@ namespace FurnitureImporter
                 Console.WriteLine("Attempting to connect to MySQL database");
 
                 using var context = new StorageContext();
+                
                 context.Database.EnsureCreated();
 
                 Console.WriteLine("Connection to database is successful!");
