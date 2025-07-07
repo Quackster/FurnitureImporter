@@ -11,8 +11,6 @@ namespace FurnitureImporter
 
         static async Task Main(string[] args)
         {
-
-
             _configuration = new ConfigurationBuilder()
                .AddJsonFile("appsettings.json")
                .Build();
@@ -242,7 +240,7 @@ namespace FurnitureImporter
                 Console.WriteLine("Attempting to connect to MySQL database");
 
                 using var context = new StorageContext();
-                
+
                 context.Database.EnsureCreated();
 
                 Console.WriteLine("Connection to database is successful!");
