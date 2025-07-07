@@ -40,7 +40,7 @@ namespace FurnitureImporter
                 Directory.CreateDirectory("input");
             }
 
-            Directory.CreateDirectory("output");
+            // Directory.CreateDirectory("output");
 
             using var context = new StorageContext();
 
