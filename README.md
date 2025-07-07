@@ -15,6 +15,17 @@ A tool for automating the import of furniture data into your Habbo emulator data
 
 ---
 
+## Download
+
+The latest builds for Linux and Windows are found on the [latest](https://github.com/Quackster/FurnitureImporter/releases/tag/latest) tag.
+
+| OS | Download |
+|---|---|
+| Linux (64-bit) | [FurnitureImporter-linux-x64.zip](https://github.com/Quackster/FurnitureImporter/releases/download/latest/FurnitureImporter-linux-x64.zip) |
+| Windows (64-bit) | [FurnitureImporter-win-x64.zip](https://github.com/Quackster/FurnitureImporter/releases/download/latest/FurnitureImporter-win-x64.zip) |
+
+---
+
 ## Requirements
 - [.NET 8 or later](https://dotnet.microsoft.com/download)
 - A MySQL database (configured via `appsettings.json`)
