@@ -246,18 +246,6 @@ namespace FurnitureImporter
             context.SaveChanges();
         }
 
-        /// <summary>
-        /// Finds variants of the given furni in the provided collection.
-        /// </summary>
-        /// <param name="items">The collection of items to search.</param>
-        /// <param name="furniFileName">The file name to match against.</param>
-        /// <returns>An enumerable of matching items.</returns>
-        private static IEnumerable<FurniItem> FindVariants(IEnumerable<FurniItem> items, string furniFileName)
-        {
-            return items.Where(x => x.FileName == furniFileName);
-        }
-
-
         private static bool TryDatabaseConnection()
         {
             try
