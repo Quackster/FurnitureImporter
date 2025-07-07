@@ -1,4 +1,4 @@
-﻿using FurnidataParser;
+using FurnidataParser;
 using Helios.Storage;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -147,10 +147,35 @@ namespace FurnitureImporter
                             itemDefinition.Behaviour += ",can_stand_on_top";
                             itemDefinition.Interactor = "default";
                             itemDefinition.TopHeight = 0;
+
+                            if (furniVariant.Category == "gate")
+                            {
+                                itemDefinition.Behaviour += ",solid,gate";
+                                itemDefinition.TopHeight = 1;
+                                itemDefinition.MaxStatus = "2";
+                            }
+
+                            if (furniVariant.Category == "teleport")
+                            {
+                                itemDefinition.Behaviour += "solid,requires_touching_for_interaction,custom_data_true_false,teleporter";
+                                itemDefinition.TopHeight = 0;
+                                itemDefinition.MaxStatus = "2";
+                            }
                         }
                         else
                         {
-                            itemDefinition.Behaviour += ",solid";
+                            if (furniVariant.Category == "table" ||
+                                furniVariant.Category == "divider")
+                            {
+                                itemDefinition.Behaviour += ",can_stack_on_top";
+                                itemDefinition.TopHeight = 1;
+                                itemDefinition.MaxStatus = "2";
+                            } 
+                            else
+                            {
+
+                            }
+                                itemDefinition.Behaviour += ",solid";
                         }
                     }
 
