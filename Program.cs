@@ -158,6 +158,7 @@ namespace FurnitureImporter
                             if (furniVariant.Category == "teleport")
                             {
                                 itemDefinition.Behaviour += "solid,requires_touching_for_interaction,custom_data_true_false,teleporter";
+                                itemDefinition.Interactor += "teleport";
                                 itemDefinition.TopHeight = 0;
                                 itemDefinition.MaxStatus = "2";
                             }
