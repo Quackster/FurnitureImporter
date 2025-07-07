@@ -1,6 +1,6 @@
 # FurnitureImporter
 
-A tool for automating the import of furniture data into your Habbo emulator database, using live furnidata XML. Designed for **developers and retro hotel owners** who want to quickly add new furniture.
+A tool for automating the import of furniture data into your Habbo emulator database, using furnidata to fill some gaps. Designed for **developers and retro hotel owners** who want to quickly add new furniture to their Kepler server.
 
 ![](https://i.imgur.com/EW6Kmn2.png)
 
